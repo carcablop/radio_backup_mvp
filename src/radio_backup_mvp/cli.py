@@ -1,4 +1,5 @@
 import escanear
+import normalizar_nombre
 
 def preguntar_ruta():
     print("Ingrese la ruta de la emisora a la carpetas Programas:")
@@ -18,11 +19,10 @@ def run_cli():
 
         if opcion == "1":
             ruta = preguntar_ruta()
-            archivos_encontrados = escanear.escaner(ruta)
-            print("Archivos encontrados:")
-            for archivo in archivos_encontrados[:10]:
-                print(f'{archivo}')
+            programa_archivo = escanear.escaner(ruta)   
         elif opcion == "2":
-            pass
+            print(f"Programa Archivo opecion 2: {programa_archivo}")
+            normalizar_nombre.normalizar_nombre(programa_archivo)
+
         elif opcion == "3":
             break
