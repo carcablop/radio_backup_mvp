@@ -28,4 +28,3 @@ def detectar_programa(archivo: Path):
         dict_programas_conductor_archivo["programa"] = programa_encontrado
         dict_programas_conductor_archivo["archivo"] = archivo.stem
     print (dict_programas_conductor_archivo)
-    return dict_programas_conductor_archivo
