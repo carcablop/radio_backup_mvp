@@ -15,8 +15,7 @@ def escaner(ruta_a_escanear):
         return
     for archivo in dir_path.rglob("*.mp3"):
         ruta_relativa_archivo= archivo.relative_to(dir_path)
-        programa_archivo=detectar_programa(ruta_relativa_archivo)
-         
+        programa_archivo=detectar_programa(ruta_relativa_archivo)     
         if programa_archivo is None:
             continue
         archivos_encontrados.append(programa_archivo)
