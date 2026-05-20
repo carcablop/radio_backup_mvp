@@ -1,28 +1,90 @@
+from pathlib import Path
 import escanear
 import normalizar_nombre
+import pandas as pd
+import catalogo
+
 
 def preguntar_ruta():
-    print("Ingrese la ruta de la emisora a la carpetas Programas:")
+    print("Ingrese la ruta de la emisora a la carpeta Programas:")
     ruta = input("> ")
     return ruta
 
+
 def menu_cli():
-    print("----Menu----")
+    print("---- MENU ----")
     print("1. Escanear")
     print("2. Normalizar archivos seleccionados")
     print("3. Salir")
 
+
 def run_cli():
+
+    programas_archivos = []
+
     while True:
+
         menu_cli()
-        opcion = input("Seleccionar una opcion: Ejmplo: 1 > ")
+
+        opcion = input("Seleccionar una opcion (Ejemplo: 1) > ")
 
         if opcion == "1":
+
             ruta = preguntar_ruta()
-            programa_archivo = escanear.escaner(ruta)   
+
+            programas_archivos = escanear.escaner(ruta)
+
+            if programas_archivos:
+                print(f"\nSe encontraron {len(programas_archivos)} archivos.\n")
+            else:
+                print("\nNo se encontraron archivos.\n")
+
         elif opcion == "2":
-            print(f"Programa Archivo opecion 2: {programa_archivo}")
-            normalizar_nombre.normalizar_nombre(programa_archivo)
+
+            if not programas_archivos:
+                print("\nNo hay archivos escaneados.")
+                print("Primero debes ejecutar la opcion 1.\n")
+                continue
+
+            print("\n" + "=" * 140)
+            print(f"{'PROGRAMA':<30} {'ARCHIVO ORIGINAL':<50} {'NUEVO NOMBRE'}")
+            print("=" * 140)
+
+            for item in programas_archivos:
+
+                programa = item["programa"]
+
+                # Convertir a Path
+                archivo = Path(item["archivo"].stem)
+
+                nombre_original = archivo.name
+
+                nuevo_nombre = normalizar_nombre.normalizar_nombre(
+                    archivo,
+                    programa
+                )
+
+                #catalogar archivos
+                nueva_fila = escanear.registros_archivos(item, nuevo_nombre)
+                catalago_csv_archivo = catalogo.obtener_catalogo_csv()
+                catalogo.agregar_filas(catalago_csv_archivo, nueva_fila )
+
+                
+               
+                #tabla = pd.Dataframe.to_csv(diccionario_archivos)
+
+                print(
+                    f"{str(programa)[:29]:<30} "
+                    f"{nombre_original[:49]:<50} "
+                    f"{nuevo_nombre}"
+                )
+
+            print("=" * 140 + "\n")
 
         elif opcion == "3":
+
+            print("Saliendo...")
             break
+
+        else:
+            print("\nOpcion invalida.\n")

@@ -1,5 +1,7 @@
 from pathlib import Path
+from datetime import datetime
 import catalogo
+
 
 CARPETAS_EXCLUIDAS = ["MUSICA", "PRODUCCION", "PRODUC", "ARCHIVOS AUDIO", "VISUALES", "MUSIC", "IMAGENES"]
 
@@ -46,37 +48,6 @@ def escaner(ruta_a_escanear):
     return archivos_encontrados
 
 def detectar_programa(archivo: Path):
-    dict_programas_conductor_archivo = {}
-    programa_encontrado= archivo.parent.name
-    print(f"Programa Encontrado: {programa_encontrado}")
-    if programa_encontrado == "Programas" or programa_encontrado == "PROGRAMAS":
-        p_encontrado = archivo.parent.parent.name
-        print(f"Programa Encontrado del padre: {p_encontrado}")
-        dict_programas_conductor_archivo["programa"] = p_encontrado
-        dict_programas_conductor_archivo["archivo"] = archivo
-    elif any(c_excluida in programa_encontrado.upper() for c_excluida in CARPETAS_EXCLUIDAS):
-        return None
-    else:
-        dict_programas_conductor_archivo["programa"] = programa_encontrado
-        dict_programas_conductor_archivo["archivo"] = archivo
-    print (dict_programas_conductor_archivo)
-    return dict_programas_conductor_archivo
-
-    if dir_path.exists():
-        pass
-    else:
-        print(f"No existe la ruta {ruta_a_escanear}")
-        return
-    for archivo in dir_path.rglob("*.mp3"):
-        ruta_relativa_archivo= archivo.relative_to(dir_path)
-        programa_archivo=detectar_programa(ruta_relativa_archivo)
-         
-        if programa_archivo is None:
-            continue
-        archivos_encontrados.append(programa_archivo)
-    return archivos_encontrados
-
-def detectar_programa(archivo: Path):
     """
     Detecta el programa a partir de la carpeta 'padre' del archivo
     Args:
@@ -90,7 +61,7 @@ def detectar_programa(archivo: Path):
     #obtener el directorio padre al que pertenece el archivo
     programa_encontrado = None
     conductor_encontrado = None
-    nombre_archivo= archivo.stem
+    nombre_archivo= archivo
     CATALOGO_PROGRAMAS_CONDUCTORES = catalogo.leer_catalogo_programas(catalogo.RUTA_A_CATALOGO)
     for c_partes in archivo.parents:
         nombre_carpeta_padre= c_partes.name.upper()
@@ -115,4 +86,36 @@ def detectar_programa(archivo: Path):
     else:
         print(f"No se detectó programa ni conductor para {archivo}")
         return None
+
+"""
+Funcion para almacenar los archivos encontrados
+Arg: ruta del programa, 
+Return: diccionario de los archivos
+"""
+def registros_archivos(archivos_escaner: dict, nombre_normalizado: str):
+    nueva_fila = {
+        "id" : archivos_escaner ["archivo"].stat().st_ino, 
+        "nombre": archivos_escaner ["archivo"].stem,
+        "nombre_normalizado" : nombre_normalizado,
+        "programa" : archivos_escaner ["programa"],
+        "conductor" : archivos_escaner ["conductor"],
+        "tipo_de_archivo" : archivos_escaner ["archivo"].suffix,
+        "tamaño_byte" : archivos_escaner ["archivo"].stat().st_size,
+        "fecha_mod" : datetime.fromtimestamp(archivos_escaner["archivo"].stat().st_mtime).strftime("%Y-%m-%d"),
+        "tiene_backup" : False,
+        "fecha_backup" : None,
+        "ruta" : str(archivos_escaner["archivo"])
+        }
+    return nueva_fila
+
+
+    
+
+
+
+#implementar la funcoin para obtener el id
+
+
+#id = haslib5.(archivos_escaner["archivo"] mas fecha)
+
 
