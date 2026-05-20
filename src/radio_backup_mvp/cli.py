@@ -2,6 +2,7 @@ from pathlib import Path
 import escanear
 import normalizar_nombre
 import pandas as pd
+import catalogo
 
 
 def preguntar_ruta():
@@ -64,7 +65,11 @@ def run_cli():
                 )
 
                 #catalogar archivos
-                diccionario_archivos= escanear.registros_archivos(item, nuevo_nombre)
+                nueva_fila = escanear.registros_archivos(item, nuevo_nombre)
+                catalago_csv_archivo = catalogo.obtener_catalogo_csv()
+                catalogo.agregar_filas(catalago_csv_archivo, nueva_fila )
+
+                
                
                 #tabla = pd.Dataframe.to_csv(diccionario_archivos)
 
