@@ -1,6 +1,7 @@
 from pathlib import Path
 from datetime import datetime
 import catalogo
+import settings
 
 
 CARPETAS_EXCLUIDAS = ["MUSICA", "PRODUCCION", "PRODUC", "ARCHIVOS AUDIO", "VISUALES", "MUSIC", "IMAGENES"]
@@ -62,7 +63,7 @@ def detectar_programa(archivo: Path):
     programa_encontrado = None
     conductor_encontrado = None
     nombre_archivo= archivo
-    CATALOGO_PROGRAMAS_CONDUCTORES = catalogo.leer_catalogo_programas(catalogo.RUTA_A_CATALOGO)
+    CATALOGO_PROGRAMAS_CONDUCTORES = catalogo.leer_catalogo_programas(settings.RUTA_A_CATALOGO)
     for c_partes in archivo.parents:
         nombre_carpeta_padre= c_partes.name.upper()
         #Primer caso: que la carpeta padre se encuentra dentro del catalogo  de programas válidos de la radio y su conductor. 
