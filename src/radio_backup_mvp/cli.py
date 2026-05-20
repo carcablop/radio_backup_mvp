@@ -1,6 +1,7 @@
 from pathlib import Path
 import escanear
 import normalizar_nombre
+import pandas as pd
 
 
 def preguntar_ruta():
@@ -53,7 +54,7 @@ def run_cli():
                 programa = item["programa"]
 
                 # Convertir a Path
-                archivo = Path(item["archivo"])
+                archivo = Path(item["archivo"].stem)
 
                 nombre_original = archivo.name
 
@@ -61,6 +62,11 @@ def run_cli():
                     archivo,
                     programa
                 )
+
+                #catalogar archivos
+                diccionario_archivos= escanear.registros_archivos(item, nuevo_nombre)
+               
+                #tabla = pd.Dataframe.to_csv(diccionario_archivos)
 
                 print(
                     f"{str(programa)[:29]:<30} "

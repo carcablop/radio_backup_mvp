@@ -2,8 +2,10 @@ from pathlib import Path
 import pandas as pd
 
 
+BASE_DIR = Path(__file__).resolve().parent
+RUTA_A_CATALOGO = BASE_DIR / "catalogo_programas.csv"
 
-RUTA_A_CATALOGO = Path.home() / "pythonschools" / "mvp" / "radio_backup_mvp" / "catalogo_programas.csv"
+#RUTA_A_CATALOGO = Path(r"C:\Users\ferne\OneDrive\Imágenes\Datos adjuntos\Desktop\radio_backup_mvp\catalogo_programas.csv")
 """
 Funcion para leer el catalogo de programas validos de la radio de un archivo csv que contienen el nombre del programa y el conductor
 Args:
