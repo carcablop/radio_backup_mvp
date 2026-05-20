@@ -1,11 +1,8 @@
+import hashlib
 from pathlib import Path
 from datetime import datetime
 import catalogo
 import settings
-
-
-CARPETAS_EXCLUIDAS = ["MUSICA", "PRODUCCION", "PRODUC", "ARCHIVOS AUDIO", "VISUALES", "MUSIC", "IMAGENES"]
-
 from pathlib import Path
 
 def escaner(ruta_a_escanear):
@@ -37,7 +34,7 @@ def escaner(ruta_a_escanear):
         if archivo.suffix.lower() in ['.mp3', '.mp4']:
             
             # Omitir el archivo si pertenece a alguna de las carpetas excluidas
-            if any(excluida in archivo.parts for excluida in CARPETAS_EXCLUIDAS):
+            if any(excluida in archivo.parts for excluida in settings.CARPETAS_EXCLUIDAS):
                 continue
 
             # Intentar detectar el programa basado en el archivo encontrado
@@ -88,14 +85,14 @@ def detectar_programa(archivo: Path):
         print(f"No se detectó programa ni conductor para {archivo}")
         return None
 
-"""
-Funcion para almacenar los archivos encontrados
-Arg: ruta del programa, 
-Return: diccionario de los archivos
-"""
 def registros_archivos(archivos_escaner: dict, nombre_normalizado: str):
+    """
+    Funcion para almacenar los archivos encontrados
+    Arg: ruta del programa, 
+    Return: diccionario de los archivos
+    """
     nueva_fila = {
-        "id" : archivos_escaner ["archivo"].stat().st_ino, 
+        "id" : obtener_id(archivos_escaner["archivo"]), 
         "nombre": archivos_escaner ["archivo"].stem,
         "nombre_normalizado" : nombre_normalizado,
         "programa" : archivos_escaner ["programa"],
@@ -109,14 +106,16 @@ def registros_archivos(archivos_escaner: dict, nombre_normalizado: str):
         }
     return nueva_fila
 
-
-    
-
-
-
-#implementar la funcoin para obtener el id
-
-
-#id = haslib5.(archivos_escaner["archivo"] mas fecha)
+def obtener_id(archivo: Path):
+    """
+    Obtiene un ID único para un archivo basado en su número de inodo, fecha de modificación y ruta.
+    Args:
+        archivo (Path): El archivo para el cual se desea obtener el ID.
+    Returns:
+        str: Un hash SHA-256 que representa el ID único del archivo.
+    """
+    stat = archivo.stat()
+    huella = f"{stat.st_ino}|{stat.st_mtime}|{archivo}"
+    return hashlib.sha256(huella.encode()).hexdigest()[:8]
 
 
